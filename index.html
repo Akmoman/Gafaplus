@@ -80,6 +80,9 @@
 </head>
 <body>
 
+    <!-- Hidden Input for Import (Global) -->
+    <input type="file" id="import-file-input" accept=".json" class="hidden" onchange="handleImportFile(event)">
+
     <!-- Navbar -->
     <nav id="navbar" class="fixed top-0 w-full z-50 transition-all duration-500 bg-gradient-to-b from-black/80 to-transparent">
         <div class="flex items-center justify-between px-4 md:px-12 py-4">
@@ -195,9 +198,18 @@
                 <li class="hover:underline cursor-pointer">اتصل بنا</li>
             </ul>
         </div>
-        <button class="border border-gray-500 px-4 py-1 hover:text-white mb-4">
-            رمز الخدمة
-        </button>
+        
+        <!-- User Actions (Import moved here) -->
+        <div class="flex items-center gap-4 mb-4">
+            <button class="border border-gray-500 px-4 py-1 hover:text-white text-xs">
+                رمز الخدمة
+            </button>
+            <button onclick="triggerImport()" class="flex items-center gap-2 border border-blue-600/50 text-blue-400 px-4 py-1 hover:bg-blue-600/10 hover:text-white transition text-xs">
+                <i data-lucide="upload" class="w-3 h-3"></i>
+                استيراد بيانات
+            </button>
+        </div>
+        
         <p class="text-xs">&copy; 2024 Al Ghafa Plus Inc.</p>
     </footer>
 
@@ -271,7 +283,6 @@
     </div>
 
     <!-- ADMIN DASHBOARD OVERLAY -->
-    <!-- تم توسيع النافذة وتغيير التصميم لتشمل القائمة -->
     <div id="admin-panel" class="fixed inset-0 z-[80] hidden items-center justify-center p-4">
         <div onclick="closeAdminPanel()" class="absolute inset-0 bg-black/95 backdrop-blur-sm"></div>
         <div class="relative bg-[#181818] w-full max-w-6xl h-[85vh] rounded-xl shadow-2xl border border-gray-800 modal-enter flex flex-col overflow-hidden">
@@ -285,14 +296,8 @@
                     </h2>
                 </div>
                 
-                <!-- Data Management Buttons -->
+                <!-- Data Management Buttons (Export Only) -->
                 <div class="flex items-center gap-2">
-                    <input type="file" id="import-file-input" accept=".json" class="hidden" onchange="handleImportFile(event)">
-                    
-                    <button onclick="triggerImport()" class="flex items-center gap-2 bg-blue-600/20 text-blue-400 px-3 py-1.5 rounded hover:bg-blue-600 hover:text-white transition text-sm border border-blue-600/30">
-                        <i data-lucide="upload" class="w-4 h-4"></i>
-                        <span>استيراد</span>
-                    </button>
                     
                     <button onclick="exportDatabase()" class="flex items-center gap-2 bg-green-600/20 text-green-400 px-3 py-1.5 rounded hover:bg-green-600 hover:text-white transition text-sm border border-green-600/30">
                         <i data-lucide="download" class="w-4 h-4"></i>
@@ -425,7 +430,7 @@
         const HERO_MOVIE = {
             id: 0,
             title: "فلم بيت الغافة",
-            description: "فلم رهيب يجمع قتال ابطال اغافة في مشهد خرافي.",
+            description: "فلم رهيب يجمع قتال ابطال الغافة في مشهد خرافي.",
             image: "https://storage.cloud.google.com/akm1983/%E2%80%8F%D9%84%D9%82%D8%B7%D8%A9%20%D8%A7%D9%84%D8%B4%D8%A7%D8%B4%D8%A9%20%D9%A2%D9%A0%D9%A2%D9%A6-%D9%A0%D9%A1-%D9%A1%D9%A0%20%D9%81%D9%8A%20%D9%A1%D9%A0.%D9%A0%D9%A5.%D9%A4%D9%A9%C2%A0%D9%85.png",
             match: "98%",
             year: "2024",
