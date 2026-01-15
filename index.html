@@ -412,60 +412,60 @@
         // --- Globals ---
         let db, auth, appId;
         const TEST_VIDEO_URL = "";
-        // Changed key to v5 to force update for all new links
-        const LOCAL_STORAGE_KEY = "cinemaPlus_movies_v5";
+        // تم التحديث إلى v7 لضمان تحميل البيانات الجديدة بعد ضبط صلاحيات السحابة
+        const LOCAL_STORAGE_KEY = "cinemaPlus_movies_v7";
         const ADMIN_PIN = "1234"; 
 
         // --- Seed Data (Initial Movies) ---
         // سيتم دمج هذه البيانات في التخزين المحلي عند تشغيل الموقع لأول مرة
         const SEED_MOVIES = [
-            // New Documentaries - All Links Updated to storage.cloud.google.com
+            // New Documentaries - Links using storage.googleapis.com (Public Access)
             { 
                 id: 101, 
                 title: "سحر عمان", 
                 category: "وثائقيات", 
-                image: "https://storage.cloud.google.com/akm1983/%D8%B3%D8%AD%D8%B1.png", 
-                video: "https://storage.cloud.google.com/akm1983/%D8%B3%D8%AD%D8%B1%20%D8%B9%D9%85%D8%A7%D9%86.m4v", 
+                image: "https://storage.googleapis.com/akm1983/%D8%B3%D8%AD%D8%B1.png", 
+                video: "https://storage.googleapis.com/akm1983/%D8%B3%D8%AD%D8%B1%20%D8%B9%D9%85%D8%A7%D9%86.m4v", 
                 match: "99%", year: "2024", duration: "Doc", rating: "عام", description: "رحلة ساحرة في ربوع سلطنة عمان." 
             },
             { 
                 id: 102, 
                 title: "سقيا رمضان", 
                 category: "وثائقيات", 
-                image: "https://storage.cloud.google.com/akm1983/%D8%B3%D9%82%D9%8A%D8%A7.png", 
-                video: "https://storage.cloud.google.com/akm1983/%D8%B3%D9%82%D9%8A%D8%A7%20%D8%B1%D9%85%D8%B6%D8%A7%D9%86%20.mov", 
+                image: "https://storage.googleapis.com/akm1983/%D8%B3%D9%82%D9%8A%D8%A7.png", 
+                video: "https://storage.googleapis.com/akm1983/%D8%B3%D9%82%D9%8A%D8%A7%20%D8%B1%D9%85%D8%B6%D8%A7%D9%86%20.mov", 
                 match: "95%", year: "2024", duration: "Doc", rating: "عام", description: "فيلم وثائقي عن العادات والتقاليد في شهر رمضان." 
             },
             { 
                 id: 103, 
                 title: "سوق نزوى", 
                 category: "وثائقيات", 
-                image: "https://storage.cloud.google.com/akm1983/%D9%86%D8%B2%D9%88%D9%8A.png", 
-                video: "https://storage.cloud.google.com/akm1983/%D8%B3%D9%88%D9%82%20%D9%86%D8%B2%D9%88%D9%89.mov", 
+                image: "https://storage.googleapis.com/akm1983/%D9%86%D8%B2%D9%88%D9%8A.png", 
+                video: "https://storage.googleapis.com/akm1983/%D8%B3%D9%88%D9%82%20%D9%86%D8%B2%D9%88%D9%89.mov", 
                 match: "97%", year: "2023", duration: "Doc", rating: "عام", description: "جولة في أروقة سوق نزوى التاريخي." 
             },
             { 
                 id: 104, 
                 title: "قرية العليا", 
                 category: "وثائقيات", 
-                image: "https://storage.cloud.google.com/akm1983/%D8%B9%D9%84%D9%8A%D8%A7.png", 
-                video: "https://storage.cloud.google.com/akm1983/%D9%82%D8%B1%D9%8A%D8%A9%20%D8%A7%D9%84%D8%B9%D9%84%D9%8A%D8%A7%D8%A1(720P_HD)_1.mp4", 
+                image: "https://storage.googleapis.com/akm1983/%D8%B9%D9%84%D9%8A%D8%A7.png", 
+                video: "https://storage.googleapis.com/akm1983/%D9%82%D8%B1%D9%8A%D8%A9%20%D8%A7%D9%84%D8%B9%D9%84%D9%8A%D8%A7%D8%A1(720P_HD)_1.mp4", 
                 match: "92%", year: "2023", duration: "Doc", rating: "عام", description: "استكشاف جمال وطبيعة قرية العليا." 
             },
             { 
                 id: 105, 
                 title: "كيرلا الارض المنسية", 
                 category: "وثائقيات", 
-                image: "https://storage.cloud.google.com/akm1983/%D9%83%D9%8A%D8%B1%D9%84%D8%A7.png", 
-                video: "https://storage.cloud.google.com/akm1983/%D9%83%D9%8A%D8%B1%D9%84%D8%A7%20%D8%A7%D9%84%D8%A7%D8%B1%D8%B6%20%D8%A7%D9%84%D9%85%D9%86%D8%B3%D9%8A%D8%A9.mov", 
+                image: "https://storage.googleapis.com/akm1983/%D9%83%D9%8A%D8%B1%D9%84%D8%A7.png", 
+                video: "https://storage.googleapis.com/akm1983/%D9%83%D9%8A%D8%B1%D9%84%D8%A7%20%D8%A7%D9%84%D8%A7%D8%B1%D8%B6%20%D8%A7%D9%84%D9%85%D9%86%D8%B3%D9%8A%D8%A9.mov", 
                 match: "88%", year: "2022", duration: "Doc", rating: "عام", description: "رحلة إلى كيرلا، الأرض الخضراء." 
             },
             { 
                 id: 106, 
                 title: "وادي المسقاة (شاهين)", 
                 category: "وثائقيات", 
-                image: "https://storage.cloud.google.com/akm1983/%D9%85%D8%B3%D9%82%D8%A7%D9%87.png", 
-                video: "https://storage.cloud.google.com/akm1983/%D9%88%D8%A7%D8%AF%D9%8A%20%D8%A7%D9%84%D9%85%D8%B3%D9%82%D8%A7%D8%A9%20(%D8%B4%D8%A7%D9%87%D9%8A%D9%86).mp4", 
+                image: "https://storage.googleapis.com/akm1983/%D9%85%D8%B3%D9%82%D8%A7%D9%87.png", 
+                video: "https://storage.googleapis.com/akm1983/%D9%88%D8%A7%D8%AF%D9%8A%20%D8%A7%D9%84%D9%85%D8%B3%D9%82%D8%A7%D8%A9%20(%D8%B4%D8%A7%D9%87%D9%8A%D9%86).mp4", 
                 match: "94%", year: "2021", duration: "Doc", rating: "عام", description: "توثيق لآثار إعصار شاهين في وادي المسقاة." 
             },
 
