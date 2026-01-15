@@ -92,7 +92,8 @@
                 
                 <!-- Desktop Menu -->
                 <ul class="hidden md:flex items-center gap-6 text-sm text-gray-200">
-                    <li class="hover:text-gray-400 cursor-pointer font-medium transition">الرئيسية</li>
+                    <li class="hover:text-gray-400 cursor-pointer font-medium transition text-white">الرئيسية</li>
+                    <li class="hover:text-gray-400 cursor-pointer transition text-red-500 font-bold">وثائقيات</li>
                     <li class="hover:text-gray-400 cursor-pointer transition">مسلسلات</li>
                     <li class="hover:text-gray-400 cursor-pointer transition">أفلام</li>
                     <li class="hover:text-gray-400 cursor-pointer transition">الأحدث</li>
@@ -125,7 +126,8 @@
     <div id="hero" class="relative h-[85vh] w-full text-white">
         <!-- Background Image -->
         <div class="absolute inset-0">
-            <img id="hero-image" src="" alt="Hero Cover" class="w-full h-full object-cover">
+            <!-- Added referrerpolicy="no-referrer" -->
+            <img id="hero-image" src="" alt="Hero Cover" class="w-full h-full object-cover" referrerpolicy="no-referrer">
             <div class="absolute inset-0 bg-gradient-to-r from-black via-black/40 to-transparent"></div>
             <div class="absolute inset-0 bg-gradient-to-t from-[#141414] via-transparent to-transparent"></div>
         </div>
@@ -199,14 +201,19 @@
             </ul>
         </div>
         
-        <!-- User Actions (Import moved here) -->
-        <div class="flex items-center gap-4 mb-4">
+        <!-- User Actions -->
+        <div class="flex flex-wrap items-center gap-4 mb-4">
             <button class="border border-gray-500 px-4 py-1 hover:text-white text-xs">
                 رمز الخدمة
             </button>
             <button onclick="triggerImport()" class="flex items-center gap-2 border border-blue-600/50 text-blue-400 px-4 py-1 hover:bg-blue-600/10 hover:text-white transition text-xs">
                 <i data-lucide="upload" class="w-3 h-3"></i>
                 استيراد بيانات
+            </button>
+            
+            <button onclick="resetData()" class="flex items-center gap-2 border border-red-600/50 text-red-400 px-4 py-1 hover:bg-red-600/10 hover:text-white transition text-xs">
+                <i data-lucide="refresh-cw" class="w-3 h-3"></i>
+                إعادة تعيين القائمة (إصلاح)
             </button>
         </div>
         
@@ -222,7 +229,8 @@
             </button>
 
             <div class="relative h-[350px] md:h-[450px]">
-                <img id="modal-image" src="" alt="" class="w-full h-full object-cover">
+                <!-- Added referrerpolicy="no-referrer" -->
+                <img id="modal-image" src="" alt="" class="w-full h-full object-cover" referrerpolicy="no-referrer">
                 <div class="absolute inset-0 bg-gradient-to-t from-[#181818] via-transparent to-transparent"></div>
                 <div class="absolute bottom-8 right-8 left-8">
                     <h2 id="modal-title" class="text-3xl md:text-5xl font-black text-white mb-4 drop-shadow-md"></h2>
@@ -342,6 +350,7 @@
                         <div class="space-y-1">
                             <label class="block text-gray-400 text-xs">التصنيف</label>
                             <select id="movie-category" class="admin-input cursor-pointer">
+                                <option value="وثائقيات">وثائقيات</option>
                                 <option value="الرائجة الآن">الرائجة الآن</option>
                                 <option value="أفلام الأكشن والإثارة">أفلام الأكشن والإثارة</option>
                                 <option value="كوميديا ودراما">كوميديا ودراما</option>
@@ -403,12 +412,64 @@
         // --- Globals ---
         let db, auth, appId;
         const TEST_VIDEO_URL = "";
-        const LOCAL_STORAGE_KEY = "cinemaPlus_movies";
+        // Changed key to v5 to force update for all new links
+        const LOCAL_STORAGE_KEY = "cinemaPlus_movies_v5";
         const ADMIN_PIN = "1234"; 
 
         // --- Seed Data (Initial Movies) ---
         // سيتم دمج هذه البيانات في التخزين المحلي عند تشغيل الموقع لأول مرة
         const SEED_MOVIES = [
+            // New Documentaries - All Links Updated to storage.cloud.google.com
+            { 
+                id: 101, 
+                title: "سحر عمان", 
+                category: "وثائقيات", 
+                image: "https://storage.cloud.google.com/akm1983/%D8%B3%D8%AD%D8%B1.png", 
+                video: "https://storage.cloud.google.com/akm1983/%D8%B3%D8%AD%D8%B1%20%D8%B9%D9%85%D8%A7%D9%86.m4v", 
+                match: "99%", year: "2024", duration: "Doc", rating: "عام", description: "رحلة ساحرة في ربوع سلطنة عمان." 
+            },
+            { 
+                id: 102, 
+                title: "سقيا رمضان", 
+                category: "وثائقيات", 
+                image: "https://storage.cloud.google.com/akm1983/%D8%B3%D9%82%D9%8A%D8%A7.png", 
+                video: "https://storage.cloud.google.com/akm1983/%D8%B3%D9%82%D9%8A%D8%A7%20%D8%B1%D9%85%D8%B6%D8%A7%D9%86%20.mov", 
+                match: "95%", year: "2024", duration: "Doc", rating: "عام", description: "فيلم وثائقي عن العادات والتقاليد في شهر رمضان." 
+            },
+            { 
+                id: 103, 
+                title: "سوق نزوى", 
+                category: "وثائقيات", 
+                image: "https://storage.cloud.google.com/akm1983/%D9%86%D8%B2%D9%88%D9%8A.png", 
+                video: "https://storage.cloud.google.com/akm1983/%D8%B3%D9%88%D9%82%20%D9%86%D8%B2%D9%88%D9%89.mov", 
+                match: "97%", year: "2023", duration: "Doc", rating: "عام", description: "جولة في أروقة سوق نزوى التاريخي." 
+            },
+            { 
+                id: 104, 
+                title: "قرية العليا", 
+                category: "وثائقيات", 
+                image: "https://storage.cloud.google.com/akm1983/%D8%B9%D9%84%D9%8A%D8%A7.png", 
+                video: "https://storage.cloud.google.com/akm1983/%D9%82%D8%B1%D9%8A%D8%A9%20%D8%A7%D9%84%D8%B9%D9%84%D9%8A%D8%A7%D8%A1(720P_HD)_1.mp4", 
+                match: "92%", year: "2023", duration: "Doc", rating: "عام", description: "استكشاف جمال وطبيعة قرية العليا." 
+            },
+            { 
+                id: 105, 
+                title: "كيرلا الارض المنسية", 
+                category: "وثائقيات", 
+                image: "https://storage.cloud.google.com/akm1983/%D9%83%D9%8A%D8%B1%D9%84%D8%A7.png", 
+                video: "https://storage.cloud.google.com/akm1983/%D9%83%D9%8A%D8%B1%D9%84%D8%A7%20%D8%A7%D9%84%D8%A7%D8%B1%D8%B6%20%D8%A7%D9%84%D9%85%D9%86%D8%B3%D9%8A%D8%A9.mov", 
+                match: "88%", year: "2022", duration: "Doc", rating: "عام", description: "رحلة إلى كيرلا، الأرض الخضراء." 
+            },
+            { 
+                id: 106, 
+                title: "وادي المسقاة (شاهين)", 
+                category: "وثائقيات", 
+                image: "https://storage.cloud.google.com/akm1983/%D9%85%D8%B3%D9%82%D8%A7%D9%87.png", 
+                video: "https://storage.cloud.google.com/akm1983/%D9%88%D8%A7%D8%AF%D9%8A%20%D8%A7%D9%84%D9%85%D8%B3%D9%82%D8%A7%D8%A9%20(%D8%B4%D8%A7%D9%87%D9%8A%D9%86).mp4", 
+                match: "94%", year: "2021", duration: "Doc", rating: "عام", description: "توثيق لآثار إعصار شاهين في وادي المسقاة." 
+            },
+
+            // Existing
             { id: 1, title: "المهمة المستحيلة", category: "الرائجة الآن", image: "https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?w=500&q=80", match: "95%", year: "2023", duration: "2h 15m", rating: "+16", description: "عميل سري يواجه أخطر منظمة إجرامية في العالم.", video: TEST_VIDEO_URL },
             { id: 2, title: "الفضاء العميق", category: "الرائجة الآن", image: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=500&q=80", match: "88%", year: "2022", duration: "1h 50m", rating: "+13", description: "رحلة لاستكشاف حافة الكون المعروف.", video: TEST_VIDEO_URL },
             { id: 3, title: "سباق الزمن", category: "الرائجة الآن", image: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=500&q=80", match: "92%", year: "2024", duration: "2h 05m", rating: "+16", description: "سائق محترف يتورط في عملية سرقة كبرى.", video: TEST_VIDEO_URL },
@@ -445,12 +506,40 @@
             lucide.createIcons();
             setupNavbarScroll();
             
-            // تهيئة البيانات: إذا كان التخزين المحلي فارغاً، قم بملئه بالبيانات الأولية
-            if (!localStorage.getItem(LOCAL_STORAGE_KEY)) {
-                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(SEED_MOVIES));
+            // Smart Merge Logic
+            // هذا الجزء يضمن إضافة الأفلام الجديدة حتى لو كان لدى المستخدم بيانات قديمة
+            const storedData = localStorage.getItem(LOCAL_STORAGE_KEY);
+            let currentMovies = storedData ? JSON.parse(storedData) : [];
+            let hasChanges = false;
+
+            // إذا كانت القائمة فارغة تماماً، استخدم البيانات الأولية
+            if (currentMovies.length === 0) {
+                currentMovies = [...SEED_MOVIES];
+                hasChanges = true;
+            } else {
+                // إذا كانت هناك بيانات، تحقق من وجود الأفلام الجديدة وأضفها
+                SEED_MOVIES.forEach(seedMovie => {
+                    const exists = currentMovies.find(m => m.id === seedMovie.id);
+                    if (!exists) {
+                        currentMovies.unshift(seedMovie); // إضافة الجديد في البداية
+                        hasChanges = true;
+                    } else {
+                        // تحديث الرابط إذا كان الفيلم موجوداً بالفعل (إصلاح الروابط القديمة)
+                        const index = currentMovies.findIndex(m => m.id === seedMovie.id);
+                        if (currentMovies[index].video !== seedMovie.video || currentMovies[index].image !== seedMovie.image) {
+                            currentMovies[index] = seedMovie;
+                            hasChanges = true;
+                        }
+                    }
+                });
             }
 
-            // تحميل وعرض البيانات من التخزين المحلي
+            if (hasChanges) {
+                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(currentMovies));
+                console.log("Updated movies list with new entries.");
+            }
+
+            // تحميل وعرض البيانات
             loadMovies();
         });
 
@@ -460,11 +549,20 @@
             return data ? JSON.parse(data) : [];
         }
 
+        // دالة لإعادة تعيين البيانات يدوياً (للمستخدم)
+        function resetData() {
+            if(confirm("هل أنت متأكد من إعادة تعيين القائمة؟ سيعيد هذا تحميل الأفلام الأصلية ويحذف أي تعديلات يدوية.")) {
+                localStorage.removeItem(LOCAL_STORAGE_KEY);
+                location.reload(); // إعادة تحميل الصفحة لتفعيل البيانات الأولية
+            }
+        }
+
         function loadMovies() {
             const allMovies = getStoredMovies();
 
             // تنظيم الأفلام في تصنيفات للعرض في الصفحة الرئيسية
             const categories = [
+                { title: "وثائقيات", movies: [] },
                 { title: "الرائجة الآن", movies: [] },
                 { title: "أفلام الأكشن والإثارة", movies: [] },
                 { title: "كوميديا ودراما", movies: [] }
@@ -473,10 +571,11 @@
             allMovies.forEach(movie => {
                 const cat = categories.find(c => c.title === movie.category);
                 if (cat) {
-                    cat.movies.unshift(movie); // الأحدث أولاً
+                    cat.movies.push(movie); 
                 } else {
                     // إذا لم يكن التصنيف موجوداً، ضعه في "الرائجة" كاحتياطي
-                    categories[0].movies.unshift(movie);
+                     const trending = categories.find(c => c.title === "الرائجة الآن");
+                     if(trending) trending.movies.push(movie);
                 }
             });
 
@@ -542,7 +641,7 @@
                         if(confirm("سيتم استبدال جميع البيانات الحالية بالبيانات المستوردة. هل أنت متأكد؟")) {
                             localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(json));
                             loadMovies();
-                            renderAdminMoviesList();
+                            // renderAdminMoviesList(); // Only needed if admin panel is open, but no harm calling it safe
                             alert("تم استيراد قاعدة البيانات بنجاح!");
                         }
                     } else {
@@ -594,13 +693,16 @@
                 return;
             }
 
-            movies.forEach(movie => {
+            // Reverse for display in admin (newest first visually) if needed, 
+            // but keep data order logic consistent.
+            [...movies].reverse().forEach(movie => {
                 const row = document.createElement('div');
                 row.className = "grid grid-cols-12 gap-4 items-center bg-[#222] p-2 rounded hover:bg-[#2a2a2a] transition border border-transparent hover:border-gray-700 group";
                 
                 row.innerHTML = `
                     <div class="col-span-1 h-10 w-16 bg-gray-800 rounded overflow-hidden">
-                        <img src="${movie.image}" alt="cover" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition" onerror="this.src='https://via.placeholder.com/150'">
+                        <!-- Added referrerpolicy="no-referrer" -->
+                        <img src="${movie.image}" alt="cover" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition" onerror="this.src='https://via.placeholder.com/150'" referrerpolicy="no-referrer">
                     </div>
                     <div class="col-span-4 font-bold text-sm text-gray-200 truncate" title="${movie.title}">${movie.title}</div>
                     <div class="col-span-3 text-xs text-gray-400 truncate">${movie.category}</div>
@@ -642,7 +744,7 @@
 
                 // حفظ في التخزين المحلي
                 const movies = getStoredMovies();
-                movies.unshift(newMovie); // إضافة في البداية
+                movies.push(newMovie); // Add to end
                 localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(movies));
                 
                 // تحديث الواجهات
@@ -697,7 +799,8 @@
                 const slider = document.createElement('div');
                 slider.className = 'flex gap-2 md:gap-4 overflow-x-auto scrollbar-hide pb-4 scroll-smooth';
 
-                category.movies.forEach(movie => {
+                // Reverse category items here to show newest added first in the slider
+                [...category.movies].reverse().forEach(movie => {
                     const card = document.createElement('div');
                     card.className = 'flex-none w-[160px] md:w-[240px] aspect-video relative rounded-md overflow-hidden cursor-pointer transition duration-300 hover:z-30 hover:scale-105 shadow-lg group-hover/row:opacity-100';
                     card.onclick = () => openModal(movie);
@@ -706,6 +809,8 @@
                     img.src = movie.image;
                     img.alt = movie.title;
                     img.className = 'w-full h-full object-cover';
+                    // Added referrerpolicy="no-referrer" to fix image loading issues from certain storage providers
+                    img.referrerPolicy = "no-referrer";
                     img.loading = 'lazy';
                     img.onerror = function() { this.src = 'https://via.placeholder.com/300x169?text=No+Image'; };
 
